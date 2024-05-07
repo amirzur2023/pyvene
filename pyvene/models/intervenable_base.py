@@ -1416,7 +1416,10 @@ class IntervenableModel(nn.Module):
         base_outputs = None
         if output_original_output:
             # returning un-intervened output with gradients
-            base_outputs = self.model(**base)
+            if 'inputs_embeds' in base:
+                base_outputs = self.model(inputs_embeds=base['inputs_embeds'])
+            else:
+                base_outputs = self.model(**base)
 
         try:
             # intervene
@@ -1446,7 +1449,10 @@ class IntervenableModel(nn.Module):
             if 'use_cache' in self.model.config.to_dict(): # for transformer models
                 model_kwargs["use_cache"] = use_cache
 
-            counterfactual_outputs = self.model(**base, **model_kwargs)
+            if 'inputs_embeds' in base:
+                counterfactual_outputs = self.model(inputs_embeds=base['inputs_embeds'], **model_kwargs)
+            else:
+                counterfactual_outputs = self.model(**base, **model_kwargs)
 
             set_handlers_to_remove.remove()
 
