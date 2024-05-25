@@ -117,6 +117,9 @@ class IntervenableModel(nn.Module):
                     get_internal_model_type(model), model.config, 
                     representation.component
                 )
+                # NOTE: temporary, default to hidden size if not found 
+                if component_dim is None:
+                    component_dim = model.config.hidden_size
                 if component_dim is not None:
                     component_dim *= int(representation.max_number_of_units)
                 all_metadata["embed_dim"] = component_dim
